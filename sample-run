@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -ue
+
+cargo build
+export PATH=target/debug/:$PATH
+server sample-config.json

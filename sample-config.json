@@ -1,0 +1,14 @@
+{
+  "checks": [
+    {
+      "id": "good",
+      "command": ["check_url", "https://alex.corcoles.net"],
+      "period_seconds": 30
+    },
+    {
+      "id": "bad",
+      "command": ["check_url", "https://alex.corcoles.net/404"],
+      "period_seconds": 30
+    }
+  ]
+}
