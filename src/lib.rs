@@ -17,3 +17,9 @@ pub struct SubCheckResult {
 pub struct CheckResult {
     pub subchecks: Vec<SubCheckResult>,
 }
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct FullCheckResult {
+    pub id: String,
+    pub result: CheckResult,
+}

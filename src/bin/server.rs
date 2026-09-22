@@ -16,7 +16,14 @@ async fn main() {
             let mut interval = tokio::time::interval(check.period());
             loop {
                 interval.tick().await;
-                check.check().await;
+                println!(
+                    "{}",
+                    serde_json::to_string(&monitoring::FullCheckResult {
+                        id: check.id.clone(),
+                        result: check.check().await,
+                    })
+                    .unwrap(),
+                );
             }
         });
     }
@@ -40,14 +47,34 @@ impl Check {
         rand::random_range(std::time::Duration::ZERO..self.period())
     }
 
-    pub async fn check(&self) {
-        tokio::process::Command::new(self.command[0].clone())
+    pub async fn check(&self) -> monitoring::CheckResult {
+        let execution = tokio::process::Command::new(self.command[0].clone())
             .args(&self.command[1..])
+            .stdout(std::process::Stdio::piped())
             .spawn()
             .unwrap_or_else(|_| panic!("could not spawn {self:?}"))
-            .wait()
+            .wait_with_output()
             .await
             .unwrap();
+        if execution.status.success() {
+            serde_json::from_slice::<monitoring::CheckResult>(&execution.stdout).unwrap_or_else(
+                |err| monitoring::CheckResult {
+                    subchecks: vec![monitoring::SubCheckResult {
+                        id: "check".into(),
+                        status: monitoring::SubCheckStatus::UNKNOWN,
+                        description: format!("parsing error {err}"),
+                    }],
+                },
+            )
+        } else {
+            monitoring::CheckResult {
+                subchecks: vec![monitoring::SubCheckResult {
+                    id: "check".into(),
+                    status: monitoring::SubCheckStatus::UNKNOWN,
+                    description: format!("return code {}", execution.status),
+                }],
+            }
+        }
     }
 }
 
