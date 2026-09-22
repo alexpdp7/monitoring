@@ -26,7 +26,7 @@ pub fn main() {
             format!("error {err} requesting {url}"),
         ),
     };
-    std::io::stderr()
+    std::io::stdout()
         .write(
             serde_json::to_string(&monitoring::CheckResult {
                 subchecks: vec![monitoring::SubCheckResult {
