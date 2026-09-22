@@ -1,5 +1,3 @@
-use std::io::Write;
-
 pub fn main() {
     let args = std::env::args().collect::<Vec<_>>();
     assert_eq!(args.len(), 2, "expected a single argument");
@@ -26,17 +24,15 @@ pub fn main() {
             format!("error {err} requesting {url}"),
         ),
     };
-    std::io::stdout()
-        .write_all(
-            serde_json::to_string(&monitoring::CheckResult {
-                subchecks: vec![monitoring::SubCheckResult {
-                    id: "request".into(),
-                    status,
-                    description,
-                }],
-            })
-            .unwrap()
-            .as_bytes(),
-        )
-        .unwrap();
+    println!(
+        "{}",
+        serde_json::to_string(&monitoring::CheckResult {
+            subchecks: vec![monitoring::SubCheckResult {
+                id: "request".into(),
+                status,
+                description,
+            }],
+        })
+        .unwrap()
+    );
 }
