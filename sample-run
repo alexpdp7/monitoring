@@ -4,4 +4,4 @@ set -ue
 
 cargo build
 export PATH=target/debug/:$PATH
-server sample-config.json
+executor sample-config.json | duck_storage
