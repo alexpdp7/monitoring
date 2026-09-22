@@ -27,7 +27,7 @@ pub fn main() {
         ),
     };
     std::io::stdout()
-        .write(
+        .write_all(
             serde_json::to_string(&monitoring::CheckResult {
                 subchecks: vec![monitoring::SubCheckResult {
                     id: "request".into(),
