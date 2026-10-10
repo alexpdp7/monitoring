@@ -14,6 +14,23 @@ pub fn main() {
     "#,
         )
         .unwrap();
+
+    let (listen_uri, http_url, token) = connection
+        .query_row(
+            "call quack_serve('quack:localhost');",
+            duckdb::params![],
+            |row| {
+                Ok((
+                    row.get::<usize, String>(0).unwrap(),
+                    row.get::<usize, String>(1).unwrap(),
+                    row.get::<usize, String>(2).unwrap(),
+                ))
+            },
+        )
+        .unwrap();
+
+    eprintln!("duck db listen_uri {listen_uri} http_url {http_url} token {token}");
+
     loop {
         let mut buffer = String::new();
         std::io::stdin()
