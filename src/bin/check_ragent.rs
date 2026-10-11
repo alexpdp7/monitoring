@@ -89,8 +89,8 @@ fn unit_as_subcheck(unit: ragent::systemd::Unit) -> SubCheckResult {
     SubCheckResult {
         id: format!("systemd-unit-{}", unit.id),
         status: match unit.active_state.as_str() {
-            "active" | "activating" => SubCheckStatus::OK,
-            _ => SubCheckStatus::CRITICAL,
+            "failed" => SubCheckStatus::CRITICAL,
+            _ => SubCheckStatus::OK,
         },
         description: format!("systemd unit {} is {}", unit.id, unit.active_state),
     }
