@@ -1,4 +1,4 @@
-#[derive(serde::Serialize, serde::Deserialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub enum SubCheckStatus {
     OK,
     WARNING,
@@ -6,7 +6,7 @@ pub enum SubCheckStatus {
     UNKNOWN,
 }
 
-#[derive(serde::Serialize, serde::Deserialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct SubCheckResult {
     pub id: String,
     pub status: SubCheckStatus,
