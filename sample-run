@@ -4,4 +4,6 @@ set -ue
 
 cargo build
 export PATH=target/debug/:$PATH
+export MONITORING_DUCKDB_PATH=sample-database
+export MONITORING_QUACK_TOKEN=sample-token
 executor sample-config.json | duck_storage

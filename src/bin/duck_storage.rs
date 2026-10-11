@@ -1,5 +1,9 @@
 pub fn main() {
-    let connection = duckdb::Connection::open("foo").unwrap();
+    let duckdb_path = std::env::var("MONITORING_DUCKDB_PATH")
+        .expect("MONITORING_DUCKDB_PATH environment variable to be set");
+    let quack_token = std::env::var("MONITORING_QUACK_TOKEN")
+        .expect("MONITORING_QUACK_TOKEN environment variable to be set");
+    let connection = duckdb::Connection::open(duckdb_path).unwrap();
     connection
         .execute_batch(
             r#"
@@ -17,8 +21,8 @@ pub fn main() {
 
     let (listen_uri, http_url, token) = connection
         .query_row(
-            "call quack_serve('quack:localhost');",
-            duckdb::params![],
+            "call quack_serve('quack:localhost', token = ?);",
+            duckdb::params![quack_token],
             |row| {
                 Ok((
                     row.get::<usize, String>(0).unwrap(),
