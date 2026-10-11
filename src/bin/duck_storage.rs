@@ -8,15 +8,25 @@ pub fn main() {
     connection
         .execute_batch(
             r#"
-      create or replace type check_status as enum('OK', 'WARNING', 'CRITICAL', 'UNKNOWN');
-      create or replace table check_results (
-        check_id           varchar not null,
-        subcheck_id        varchar not null,
-        status             check_status,
-        description        varchar,
-        inserted_at        timestamp not null default now()
-      );
-    "#,
+              create or replace type check_status as enum('OK', 'WARNING', 'CRITICAL', 'UNKNOWN');
+              create or replace table check_results (
+                check_id           varchar not null,
+                subcheck_id        varchar not null,
+                status             check_status,
+                description        varchar,
+                inserted_at        timestamp not null default now()
+              );
+
+              create or replace view last_check_results as (
+                select   check_id,
+                         subcheck_id,
+                         last(status order by inserted_at) as status,
+                         last(inserted_at order by inserted_at) as inserted_at,
+                         last(description order by inserted_at) as description
+                from     check_results
+                group by check_id, subcheck_id
+              );
+            "#,
         )
         .unwrap();
 
