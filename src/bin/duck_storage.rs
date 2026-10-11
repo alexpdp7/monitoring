@@ -3,6 +3,7 @@ pub fn main() {
         .expect("MONITORING_DUCKDB_PATH environment variable to be set");
     let quack_token = std::env::var("MONITORING_QUACK_TOKEN")
         .expect("MONITORING_QUACK_TOKEN environment variable to be set");
+    let duckdb_ui = std::env::var("MONITORING_DUCKDB_UI").is_ok();
     let connection = duckdb::Connection::open(duckdb_path).unwrap();
     connection
         .execute_batch(
@@ -34,6 +35,13 @@ pub fn main() {
         .unwrap();
 
     eprintln!("duck db listen_uri {listen_uri} http_url {http_url} token {token}");
+
+    if duckdb_ui {
+        connection
+            .execute("CALL start_ui_server();", duckdb::params![])
+            .unwrap();
+        eprintln!("DuckDB user interface running at <http://localhost:4213>");
+    }
 
     loop {
         let mut buffer = String::new();
