@@ -6,6 +6,7 @@ pub fn main() {
     let duckdb_ui = std::env::var("MONITORING_DUCKDB_UI").is_ok();
     let connection = duckdb::Connection::open(duckdb_path).unwrap();
     connection
+        // inserted_at should have a default now(), but https://github.com/duckdb/duckdb-quack/issues/132
         .execute_batch(
             r#"
               create or replace type check_status as enum('OK', 'WARNING', 'CRITICAL', 'UNKNOWN');
@@ -14,7 +15,7 @@ pub fn main() {
                 subcheck_id        varchar not null,
                 status             check_status,
                 description        varchar,
-                inserted_at        timestamp not null default now()
+                inserted_at        timestamp not null
               );
 
               create or replace view last_check_results as (
@@ -76,7 +77,7 @@ pub fn main() {
             full_check_result.summary()
         );
         for subcheck in full_check_result.result.subchecks {
-            connection.execute("insert into check_results(check_id, subcheck_id, status, description) values (?, ?, ?, ?)", duckdb::params![full_check_result.id, subcheck.id, format!("{:?}", subcheck.status), subcheck.description]).unwrap();
+            connection.execute("insert into check_results(check_id, subcheck_id, status, description, inserted_at) values (?, ?, ?, ?, ?)", duckdb::params![full_check_result.id, subcheck.id, format!("{:?}", subcheck.status), subcheck.description, chrono::Utc::now()]).unwrap();
         }
     }
 }
