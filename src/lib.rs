@@ -3,7 +3,12 @@
 //! `monitoring` is composed of the following executables:
 //!
 //! * [`executor`](../executor/index.html): runs monitoring checks based on a configuration.
-//! * [`duck_storage`](../check_url/index.html): stores monitoring check results in a DuckDB database.
+//! * [`duck_storage`](../duck_storage/index.html): stores monitoring check results in a DuckDB database.
+//!
+//! The crate also includes the following monitoring check commands:
+//!
+//! * [`check_url`](../check_url/index.html)
+//! * [`check_ragent`](../check_ragent/index.html): a check for the <https://github.com/alexpdp7/ragent> monitoring agent
 
 use std::collections::HashMap;
 

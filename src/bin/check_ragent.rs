@@ -1,3 +1,5 @@
+//! A check for the <https://github.com/alexpdp7/ragent> monitoring agent.
+
 use monitoring::{SubCheckResult, SubCheckStatus};
 use ragent::RagentInfo;
 
