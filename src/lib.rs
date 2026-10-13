@@ -5,7 +5,9 @@
 //! * [`executor`](../executor/index.html): runs monitoring checks based on a configuration.
 //! * [`duck_storage`](../check_url/index.html): stores monitoring check results in a DuckDB database.
 
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+use std::collections::HashMap;
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Hash, Eq)]
 pub enum SubCheckStatus {
     OK,
     WARNING,
@@ -29,4 +31,40 @@ pub struct CheckResult {
 pub struct FullCheckResult {
     pub id: String,
     pub result: CheckResult,
+}
+
+impl FullCheckResult {
+    pub fn summary(&self) -> HashMap<SubCheckStatus, i32> {
+        let (ok, warning, critical, unknown) =
+            self.result.subchecks.iter().fold((0, 0, 0, 0), |c, sc| {
+                (
+                    c.0 + if sc.status == SubCheckStatus::OK {
+                        1
+                    } else {
+                        0
+                    },
+                    c.1 + if sc.status == SubCheckStatus::WARNING {
+                        1
+                    } else {
+                        0
+                    },
+                    c.2 + if sc.status == SubCheckStatus::CRITICAL {
+                        1
+                    } else {
+                        0
+                    },
+                    c.3 + if sc.status == SubCheckStatus::UNKNOWN {
+                        1
+                    } else {
+                        0
+                    },
+                )
+            });
+        HashMap::from([
+            (SubCheckStatus::OK, ok),
+            (SubCheckStatus::WARNING, warning),
+            (SubCheckStatus::CRITICAL, critical),
+            (SubCheckStatus::UNKNOWN, unknown),
+        ])
+    }
 }

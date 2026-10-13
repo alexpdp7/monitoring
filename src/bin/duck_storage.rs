@@ -1,5 +1,7 @@
 //! Foo
 
+use monitoring::SubCheckStatus;
+
 pub fn main() {
     let duckdb_path = std::env::var("MONITORING_DUCKDB_PATH")
         .expect("MONITORING_DUCKDB_PATH environment variable to be set");
@@ -72,7 +74,11 @@ pub fn main() {
             .expect("failed reading from stdin");
         let full_check_result =
             serde_json::from_str::<monitoring::FullCheckResult>(&buffer).expect("parsing error");
-        eprintln!("{:?}", full_check_result);
+        eprintln!(
+            "Received {} with {:?} subchecks",
+            full_check_result.id,
+            full_check_result.summary()
+        );
         for subcheck in full_check_result.result.subchecks {
             connection.execute("insert into check_results(check_id, subcheck_id, status, description) values (?, ?, ?, ?)", duckdb::params![full_check_result.id, subcheck.id, format!("{:?}", subcheck.status), subcheck.description]).unwrap();
         }

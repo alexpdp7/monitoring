@@ -8,7 +8,7 @@ async fn main() {
             .unwrap_or_else(|_| panic!("Could not open {configuration}")),
     )
     .unwrap();
-    eprintln!("{:?}", configuration);
+    eprintln!("{:#?}", configuration);
     let mut check_tasks = tokio::task::JoinSet::new();
     for check in configuration.checks {
         check_tasks.spawn(async move {
