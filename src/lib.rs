@@ -1,3 +1,10 @@
+//! `monitoring` is a Nagios-inspired minimal monitoring system.
+//!
+//! `monitoring` is composed of the following executables:
+//!
+//! * [`executor`](../executor/index.html): runs monitoring checks based on a configuration.
+//! * [`duck_storage`](../check_url/index.html): stores monitoring check results in a DuckDB database.
+
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub enum SubCheckStatus {
     OK,

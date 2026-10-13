@@ -1,3 +1,5 @@
+//! Foo
+
 pub fn main() {
     let duckdb_path = std::env::var("MONITORING_DUCKDB_PATH")
         .expect("MONITORING_DUCKDB_PATH environment variable to be set");

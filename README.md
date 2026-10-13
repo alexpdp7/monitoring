@@ -23,3 +23,10 @@ FROM quack_query('quack:localhost', 'FROM quack_query('quack:localhost', 'select
 You can also view the DuckDB user interface at <http://localhost:4213/>.
 
 [Design notes](https://alex.corcoles.net/notes/tech/a-monitoring-system)
+
+## Documentation
+
+```
+cargo doc --bins --no-deps
+$BROWSER target/doc/monitoring/index.html
+```
