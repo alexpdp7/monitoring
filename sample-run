@@ -7,4 +7,5 @@ export PATH=target/debug/:$PATH
 export MONITORING_DUCKDB_PATH=sample-database
 export MONITORING_QUACK_TOKEN=sample-token
 export MONITORING_DUCKDB_UI=1
+export LD_LIBRARY_PATH="$(realpath target/duckdb-download/*/*)"
 executor sample-config.json | duck_storage
