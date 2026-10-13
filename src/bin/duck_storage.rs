@@ -26,6 +26,16 @@ pub fn main() {
                 from     check_results
                 group by check_id, subcheck_id
               );
+
+              create or replace view last_ok_check_results as (
+                select   check_id,
+                         subcheck_id,
+                         last(inserted_at order by inserted_at) as inserted_at,
+                         last(description order by inserted_at) as description
+                from     check_results
+                where    status = 'OK'
+                group by check_id, subcheck_id
+              );
             "#,
         )
         .unwrap();
