@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-duckdb = "1.10505.0"
+chrono = "0.4.45"
+duckdb = { version = "1.10505.0", features = ["modern-full"] }
 ragent = { git = "https://github.com/alexpdp7/ragent.git", version = "7.0.2" }
 rand = "0.10.3"
 serde = { version = "1.0.229", features = ["derive"] }

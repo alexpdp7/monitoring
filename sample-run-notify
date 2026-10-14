@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -ue
+
+cargo build
+export PATH=target/debug/:$PATH
+export MONITORING_QUACK_TOKEN=sample-token
+export LD_LIBRARY_PATH="$(realpath target/duckdb-download/*/*)"
+check_notifications
