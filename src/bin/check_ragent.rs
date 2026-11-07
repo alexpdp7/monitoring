@@ -6,7 +6,7 @@ use ragent::RagentInfo;
 pub fn main() {
     let args = std::env::args().collect::<Vec<_>>();
     assert_eq!(args.len(), 2, "expected a single argument");
-    let uri = format!("http://{}:21488", &args[1]);
+    let uri = format!("http://{}:21488", args[1]);
     let request = ureq::get(uri.clone()).call();
     let subchecks = match request {
         Ok(mut request) => as_subchecks(request.body_mut().read_json::<RagentInfo>()),
@@ -110,7 +110,7 @@ fn filesystems_as_subchecks(
 fn filesystem_as_subchecks(filesystem: ragent::filesystems::Filesystem) -> Vec<SubCheckResult> {
     filesystem_as_space_subcheck(&filesystem)
         .into_iter()
-        .chain(filesystem_as_inode_subcheck(&filesystem).into_iter())
+        .chain(filesystem_as_inode_subcheck(&filesystem))
         .collect::<Vec<_>>()
 }
 
@@ -153,7 +153,12 @@ fn check_thresholds(value: u64, warning: u64, critical: u64) -> (SubCheckStatus,
             format!("{value} is over warning threshold {warning}"),
         )
     } else if value > critical {
-        (SubCheckStatus::WARNING, format!("{value} is below warning threshold {warning} but over critical threshold {critical}"))
+        (
+            SubCheckStatus::WARNING,
+            format!(
+                "{value} is below warning threshold {warning} but over critical threshold {critical}"
+            ),
+        )
     } else {
         (
             SubCheckStatus::CRITICAL,
